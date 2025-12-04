@@ -10,13 +10,6 @@ The goal of this assignment is to define the **first screen a marketer sees afte
 - Quickly understand account activity.
 - Take the most impactful actions efficiently.
 
-## Dashboard Highlights
-
-- **Account Summary:** Campaign stats, revenue impact, and engagement metrics.
-- **Quick Actions:** Create offers, launch campaigns, and manage loyalty programs.
-- **Analytics Snapshot:** Charts showing performance trends.
-- **Alerts & Notifications:** Urgent updates and key insights for immediate attention.
-
 ## How to View
 
 - Open `home.html` in a browser.  
