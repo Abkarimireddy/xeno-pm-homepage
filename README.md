@@ -10,11 +10,12 @@ The goal of this assignment is to define the **first screen a marketer sees afte
 - Quickly understand account activity.
 - Take the most impactful actions efficiently.
 
-## How to View
+## Dashboard Highlights
 
-- Open `home.html` in a browser.  
-- Or via GitHub Pages (if enabled):  
-  `https://yourusername.github.io/xeno-pm-homepage/home.html`
+- **Account Summary:** Campaign stats, revenue impact, and engagement metrics.
+- **Quick Actions:** Create offers, launch campaigns, and manage loyalty programs.
+- **Analytics Snapshot:** Charts showing performance trends.
+- **Alerts & Notifications:** Urgent updates and key insights for immediate attention.
 
 ## Notes
 
