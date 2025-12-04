@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xeno Dashboard - Homepage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 999;
+            animation: fadeOut 0.5s ease-in-out 2s forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; pointer-events: none; }
+        }
+
+        .loading-logo {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .loading-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .loading-subtext {
+            font-size: 15px;
+            opacity: 0.85;
+            margin-bottom: 28px;
+        }
+
+        .loading-bar {
+            width: 280px;
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .loading-bar-inner {
+            height: 100%;
+            background: white;
+            border-radius: 999px;
+            animation: loading 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { width: 20%; }
+            50% { width: 80%; }
+            100% { width: 20%; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            padding: 14px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0052cc;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #0052cc;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item > a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dropdown-arrow {
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .nav-item:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-5px);
+            transition: all 0.2s;
+            z-index: 1000;
+            margin-top: 8px;
+        }
+
+        .nav-item:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            font-size: 13px;
+            color: #333;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+            color: #0052cc;
+        }
+
+        .dropdown-item:first-child {
+            border-radius: 6px 6px 0 0;
+        }
+
+        .dropdown-item:last-child {
+            border-radius: 0 0 6px 6px;
+        }
+
+        .dropdown-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #999;
+            padding: 8px 16px 4px 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .account-badge {
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #eef3ff;
+            color: #0052cc;
+            font-weight: 500;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #0052cc;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text h1 {
+            font-size: 26px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .welcome-text p {
+            color: #555;
+            font-size: 13px;
+        }
+
+        .welcome-meta {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .welcome-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0052cc;
+        }
+
+        /* Grid Layout */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 22px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #d0d0d0;
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0052cc;
+            margin-bottom: 8px;
+        }
+
+        .card-status {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .status-good { color: #388e3c; }
+        .status-warning { color: #f57c00; }
+
+        /* Large Revenue Card */
+        .revenue-card {
+            grid-column: span 3;
+            background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+            color: white;
+            padding: 28px;
+        }
+
+        .revenue-card .card-title {
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .revenue-period-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .period-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .period-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .period-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            min-width: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-5px);
+            transition: all 0.2s;
+            z-index: 1000;
+            margin-top: 8px;
+        }
+
+        .revenue-period-selector:hover .period-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .period-item {
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #333;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .period-item:hover {
+            background: #f5f7fa;
+            color: #0052cc;
+        }
+
+        .period-item:last-child {
+            border-bottom: none;
+        }
+
+        .period-item.active {
+            color: #0052cc;
+            font-weight: 600;
+            background: #eef3ff;
+        }
+
+        .revenue-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .revenue-left {
+            flex: 1;
+        }
+
+        .revenue-value {
+            font-size: 44px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .revenue-change {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .revenue-submetrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .sub-metric {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 12px;
+        }
+
+        .sub-metric-value {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .sub-metric-label {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        /* Two Column Section */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1.4fr 1.6fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .channel-item {
+            padding: 16px;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            border-top: 1px solid #f0f0f0;
+            margin-bottom: 0;
+            box-shadow: none;
+        }
+
+        .channel-item:first-child {
+            border-top: none;
+        }
+
+        .channel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .channel-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1a1a1a;
+        }
+
+        .channel-revenue {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0052cc;
+        }
+
+        .channel-metrics {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .segment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .segment-item {
+            background: transparent;
+            padding: 16px;
+            border: none;
+            border-radius: 0;
+            border-top: 1px solid #f0f0f0;
+            box-shadow: none;
+        }
+
+        .segment-item:first-child {
+            border-top: none;
+        }
+
+        .segment-name {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .segment-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .segment-stat-value {
+            font-weight: 600;
+            color: #0052cc;
+            text-align: right;
+        }
+
+        /* Alerts */
+        .alert-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 24px;
+        }
+
+        .alert-item {
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            border: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .alert-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .alert-fixed {
+            background: #e8f5e9;
+            border-left: 4px solid #388e3c;
+        }
+
+        .alert-warning {
+            background: #fff8e1;
+        }
+
+        .alert-opportunity {
+            background: #e3f2fd;
+        }
+
+        .alert-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+
+        .alert-fixed .alert-label { color: #388e3c; }
+        .alert-warning .alert-label { color: #f57c00; }
+        .alert-opportunity .alert-label { color: #1976d2; }
+
+        .alert-text {
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .alert-action {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0052cc;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .alert-action:hover {
+            text-decoration: underline;
+        }
+
+        .fix-details {
+            display: none;
+            margin-top: 12px;
+            padding: 14px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .fix-details.show {
+            display: block;
+        }
+
+        .fix-section {
+            margin-bottom: 12px;
+        }
+
+        .fix-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .fix-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .fix-item {
+            font-size: 11px;
+            color: #555;
+            line-height: 1.6;
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .fix-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #388e3c;
+        }
+
+        /* Actions */
+        .actions-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 24px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            background: #0052cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #003d99;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #999;
+            font-size: 12px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer a {
+            color: #0052cc;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .revenue-card {
+                grid-column: span 2;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .revenue-card {
+                grid-column: span 1;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .welcome-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .welcome-stats {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .revenue-main {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-logo">xeno</div>
+        <div class="loading-text">Loading your dashboard...</div>
+        <div class="loading-subtext">Fetching campaigns, journeys & insights</div>
+        <div class="loading-bar">
+            <div class="loading-bar-inner"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="nav-left">
+            <div class="logo">xeno</div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="#">Campaigns <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-label">View</div>
+                        <a href="#" class="dropdown-item">All Campaigns</a>
+                        <a href="#" class="dropdown-item">Active Campaigns</a>
+                        <a href="#" class="dropdown-item">Last Month</a>
+                        <a href="#" class="dropdown-item">Scheduled</a>
+                        <a href="#" class="dropdown-item">Archived</a>
+                        <div class="dropdown-label">Actions</div>
+                        <a href="#" class="dropdown-item">Create Campaign</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Journeys <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-label">View</div>
+                        <a href="#" class="dropdown-item">All Journeys</a>
+                        <a href="#" class="dropdown-item">Active Journeys</a>
+                        <a href="#" class="dropdown-item">Last Month</a>
+                        <a href="#" class="dropdown-item">Paused</a>
+                        <div class="dropdown-label">Actions</div>
+                        <a href="#" class="dropdown-item">Create Journey</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Audiences <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-label">View</div>
+                        <a href="#" class="dropdown-item">All Segments</a>
+                        <a href="#" class="dropdown-item">Active Segments</a>
+                        <a href="#" class="dropdown-item">High-Value Customers</a>
+                        <a href="#" class="dropdown-item">Dormant Users</a>
+                        <div class="dropdown-label">Actions</div>
+                        <a href="#" class="dropdown-item">Build Segment</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Offers & Loyalty <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-label">View</div>
+                        <a href="#" class="dropdown-item">Active Offers</a>
+                        <a href="#" class="dropdown-item">Loyalty Programs</a>
+                        <a href="#" class="dropdown-item">Referral Programs</a>
+                        <a href="#" class="dropdown-item">Last Month</a>
+                        <div class="dropdown-label">Actions</div>
+                        <a href="#" class="dropdown-item">Create Offer</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Analytics <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-label">View</div>
+                        <a href="#" class="dropdown-item">Campaign Analytics</a>
+                        <a href="#" class="dropdown-item">Journey Analytics</a>
+                        <a href="#" class="dropdown-item">Revenue Analytics</a>
+                        <a href="#" class="dropdown-item">Channel Performance</a>
+                        <a href="#" class="dropdown-item">Custom Reports</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <div class="account-badge">Brand: RetailCo • Premium</div>
+            <div class="user-section">
+                <span class="user-name">Abi</span>
+                <div class="avatar">A</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h1>Welcome back, Abi</h1>
+                <p>Here is how your marketing is performing today.</p>
+                <div class="welcome-meta">Last updated 2 minutes ago • All systems healthy</div>
+            </div>
+            <div class="welcome-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Revenue This Week</div>
+                    <div class="stat-value">₹2.4M</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Customers Reached</div>
+                    <div class="stat-value">86K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="grid-layout">
+            <!-- Active Campaigns -->
+            <div class="card">
+                <div class="card-title">Active Campaigns</div>
+                <div class="card-value">9</div>
+                <div class="card-status status-good">7 healthy • 2 need review</div>
+            </div>
+
+            <!-- Journeys -->
+            <div class="card">
+                <div class="card-title">Journeys Running</div>
+                <div class="card-value">4</div>
+                <div class="card-status status-good">Always-on automation live</div>
+            </div>
+
+            <!-- Loyalty -->
+            <div class="card">
+                <div class="card-title">Loyalty Program</div>
+                <div class="card-value">132K</div>
+                <div class="card-status">Members enrolled</div>
+            </div>
+
+            <!-- Revenue Card -->
+            <div class="card revenue-card">
+                <div class="card-title">
+                    <span>Revenue Influenced</span>
+                    <div class="revenue-period-selector">
+                        <button class="period-btn">This Week ▼</button>
+                        <div class="period-dropdown">
+                            <a href="#" class="period-item active">This Week</a>
+                            <a href="#" class="period-item">Last Week</a>
+                            <a href="#" class="period-item">This Month</a>
+                            <a href="#" class="period-item">Last Month</a>
+                            <a href="#" class="period-item">Last 3 Months</a>
+                            <a href="#" class="period-item">This Year</a>
+                            <a href="#" class="period-item">Last Year</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="revenue-main">
+                    <div class="revenue-left">
+                        <div class="revenue-value">₹2,450,000</div>
+                        <div class="revenue-change">Up 11% vs last week</div>
+                        <div class="revenue-submetrics">
+                            <div class="sub-metric">
+                                <div class="sub-metric-value">₹920K</div>
+                                <div class="sub-metric-label">Top: WhatsApp</div>
+                            </div>
+                            <div class="sub-metric">
+                                <div class="sub-metric-value">₹610K</div>
+                                <div class="sub-metric-label">Top Segment</div>
+                            </div>
+                            <div class="sub-metric">
+                                <div class="sub-metric-value">3.9x</div>
+                                <div class="sub-metric-label">Overall ROI</div>
+                            </div>
+                            <div class="sub-metric">
+                                <div class="sub-metric-value">9,800</div>
+                                <div class="sub-metric-label">New Customers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Channels & Segments -->
+        <div class="two-column">
+            <!-- Channel Performance -->
+            <div class="card">
+                <div class="card-title">Channel Performance (7 Days)</div>
+
+                <div class="channel-item">
+                    <div class="channel-header">
+                        <div class="channel-name">WhatsApp</div>
+                        <div class="channel-revenue">₹920K</div>
+                    </div>
+                    <div class="channel-metrics">4.8% CTR • 2.3% conversion • 1.9K orders</div>
+                </div>
+
+                <div class="channel-item">
+                    <div class="channel-header">
+                        <div class="channel-name">SMS</div>
+                        <div class="channel-revenue">₹610K</div>
+                    </div>
+                    <div class="channel-metrics">4.1% CTR • 1.8% conversion • 1.3K orders</div>
+                </div>
+
+                <div class="channel-item">
+                    <div class="channel-header">
+                        <div class="channel-name">Email</div>
+                        <div class="channel-revenue">₹480K</div>
+                    </div>
+                    <div class="channel-metrics">3.0% CTR • 1.1% conversion • 890 orders</div>
+                </div>
+
+                <div class="channel-item">
+                    <div class="channel-header">
+                        <div class="channel-name">Push Notifications</div>
+                        <div class="channel-revenue">₹440K</div>
+                    </div>
+                    <div class="channel-metrics">2.6% CTR • 0.9% conversion • 650 orders</div>
+                </div>
+
+                <div class="channel-item">
+                    <div class="channel-header">
+                        <div class="channel-name">Facebook & Instagram</div>
+                        <div class="channel-revenue">₹520K</div>
+                    </div>
+                    <div class="channel-metrics">3.4% CTR • 1.2% conversion • 720 orders</div>
+                </div>
+            </div>
+
+            <!-- Top Segments -->
+            <div class="card">
+                <div class="card-title">Top Segments to Focus</div>
+                <div class="segment-list">
+                    <div class="segment-item">
+                        <div class="segment-name">High-Value Repeat</div>
+                        <div class="segment-stat">
+                            <span>Size:</span>
+                            <span class="segment-stat-value">24K</span>
+                        </div>
+                        <div class="segment-stat">
+                            <span>Revenue (7d):</span>
+                            <span class="segment-stat-value">₹1.1M</span>
+                        </div>
+                        <div class="segment-stat">
+                            <span>Avg Order:</span>
+                            <span class="segment-stat-value">₹1,850</span>
+                        </div>
+                    </div>
+
+                    <div class="segment-item">
+                        <div class="segment-name">High-Intent Browsers</div>
+                        <div class="segment-stat">
+                            <span>Size:</span>
+                            <span class="segment-stat-value">32K</span>
+                        </div>
+                        <div class="segment-stat">
+                            <span>Cart Starts:</span>
+                            <span class="segment-stat-value">4.5K</span>
+                        </div>
+                        <div class="segment-stat">
+                            <span>Active Campaigns:</span>
+                            <span class="segment-stat-value">0</span>
+                        </div>
+                    </div>
+
+                    <div class="segment-item">
+                        <div class="segment-name">Dormant Users (90+ days)</div>
+                        <div class="segment-stat">
+                            <span>Size:</span>
+                            <span class="segment-stat-value">18K</span>
+                        </div>
+                        <div class="segment-stat">
+                            <span>Last Engaged:</span>
+                            <span class="segment-stat-value">>30 days</span>
+                        </div>
+                        <div class="segment-stat">
+                            <span>Current Revenue:</span>
+                            <span class="segment-stat-value">Low</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts & Recommendations -->
+<!-- Alerts & Recommendations -->
+<style>
+    .alert-section {
+        width: 100%;
+        margin: 0; 
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .card-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #1a1a1a;
+    }
+
+    .alert-item {
+        width: 100%;
+        padding: 18px;
+        border-radius: 8px;
+        margin-bottom: 14px;
+        box-sizing: border-box;
+
+        /* Removed side lines */
+        border-left: none;
+    }
+
+    /* New Colors (No side borders) */
+    .alert-fixed {
+        background: #e6f7ff;
+    }
+
+    .alert-warning {
+        background: #fff5e6;
+    }
+
+    .alert-opportunity {
+        background: #eef5ff;
+    }
+
+    .alert-label {
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .alert-text {
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #222;
+    }
+
+    .alert-action {
+        font-size: 14px;
+        color: #0066cc;
+        cursor: pointer;
+    }
+
+    .fix-details {
+        display: none;
+        background: #f7fbff;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 6px;
+
+        /* removed left border */
+        border-left: none;
+    }
+
+    .fix-details.show {
+        display: block;
+    }
+
+    .fix-section {
+        margin-bottom: 12px;
+    }
+
+    .fix-title {
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #0d4a6e;
+    }
+
+    .fix-item {
+        margin-left: 12px;
+        font-size: 14px;
+        color: #333;
+    }
+</style>
+
+
+<div class="alert-section">
+    <div class="card-title">Alerts & Recommendations</div>
+
+    <div class="alert-item alert-fixed">
+        <div class="alert-label">Issues To Fix</div>
+        <div class="alert-text"><strong>Email unsubscribe rate reduced from 3.4% to 1.2%.</strong> Applied fixes: Reduced frequency to 2-3x/week, added preference center, improved segmentation. Continue monitoring for next 7 days.</div>
+        <div class="alert-action" onclick="document.getElementById('fixDetails').classList.toggle('show')">View what was fixed →</div>
+        
+        <div id="fixDetails" class="fix-details">
+            <div class="fix-section">
+                <div class="fix-title">✓ Frequency Management</div>
+                <div class="fix-item">Reduced from 5-7 emails/week to 2-3 emails/week</div>
+                <div class="fix-item">Added 48-hour gap between promotional emails</div>
+            </div>
+            <div class="fix-section">
+                <div class="fix-title">✓ Preference Center</div>
+                <div class="fix-item">Users can now choose frequency (daily/weekly)</div>
+                <div class="fix-item">Option to select content types (offers/updates)</div>
+            </div>
+            <div class="fix-section">
+                <div class="fix-title">✓ Better Segmentation</div>
+                <div class="fix-item">Split list by engagement level (active/inactive)</div>
+                <div class="fix-item">Personalized send times based on open patterns</div>
+            </div>
+            <div class="fix-section">
+                <div class="fix-title">✓ Content Quality</div>
+                <div class="fix-item">Removed clickbait subject lines</div>
+                <div class="fix-item">Improved mobile optimization (70% of opens)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert-item alert-warning">
+        <div class="alert-label">Optimize</div>
+        <div class="alert-text">Your "Abandoned Cart - WhatsApp" journey converts at 5.2%, higher than others. Increase audience size and extend duration.</div>
+        <div class="alert-action">Scale this journey →</div>
+    </div>
+
+    <div class="alert-item alert-opportunity">
+        <div class="alert-label">Opportunity</div>
+        <div class="alert-text">High-Intent Browsers (32K) have no active campaigns for 7 days. Recover potential revenue with conversion campaign now.</div>
+        <div class="alert-action">Create conversion campaign →</div>
+    </div>
+</div>
+
+
+        <!-- Quick Actions -->
+        <div class="actions-section">
+            <div class="card-title">Quick Actions</div>
+            <div class="actions-grid">
+                <button class="action-btn">Create Campaign</button>
+                <button class="action-btn">Build Segment</button>
+                <button class="action-btn">Launch Journey</button>
+                <button class="action-btn">Create Offer</button>
+                <button class="action-btn">View Analytics</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Xeno Dashboard v1.0 • Questions? <a href="#">Contact Support</a>
+        </div>
+    </div>
+</body>
+</html>
